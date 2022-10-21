@@ -10,6 +10,9 @@ class Gateway extends Model
 
     protected $casts = ['status' => 'boolean', 'code' => 'string', 'extra' => 'object','input_form'=> 'object'];
 
+    const GATEWAY_ACTIVE = 1;
+    const GATEWAY_DISABLED = 0;
+
     public function currencies()
     {
         return $this->hasMany(GatewayCurrency::class, 'method_code', 'code');
