@@ -452,4 +452,6 @@ Route::get('/', 'SiteController@index')->name('home');
 Route::get('/{slug}', 'SiteController@pages')->name('home.pages');
 Route::get('company-policy/{id}/{slug}', 'SiteController@policy')->name('links');
 
+Route::get('/payment/payment-confirm/{token}', 'ApiController@returnConfirmPage');
+
 
