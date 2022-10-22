@@ -21,37 +21,6 @@ class ApiController extends Controller
 {
     const DEFAULT_PASSWORD = "Ksebpe!vZyd&bE+VqQ3)3qtKU!8T(PGZxj!DE@x9mKx@Z7D2yYb%k^hCYxR#";
 
-    public function signgleSignIn($user)
-    {
-        try {
-            DB::beginTransaction();
-            $name = $user->name;
-            $email = $user->email;
-            $username = $user->username;
-
-            $exists = User::where('email', $email)->first();
-            if ($exists) {
-                if (!Auth::check()) {
-                    Auth::attempt(["email" => $email, 'password' => ApiController::DEFAULT_PASSWORD]);
-                }
-            } else {
-                $newUser = new User();
-                $newUser->email = $email;
-                $newUser->username = $username;
-                $newUser->lastname = $name;
-                $newUser->password = Hash::make(ApiController::DEFAULT_PASSWORD);
-                $newUser->save();
-
-                Auth::attempt(["email" => $email, 'password' => ApiController::DEFAULT_PASSWORD]);
-            }
-            DB::commit();
-            return "DONE";
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return "ERROR";
-        }
-    }
-
     public function generateToken(Request $request)
     {
         $token = Crypt::encryptString(json_encode($request->all()));
@@ -275,5 +244,37 @@ class ApiController extends Controller
             "status" => 200,
             "data" => $gateways
         ]);
+    }
+
+    // PRIVATE FUNCTION ===============================================================
+    private function signgleSignIn($user)
+    {
+        try {
+            DB::beginTransaction();
+            $name = $user->name;
+            $email = $user->email;
+            $username = $user->username;
+
+            $exists = User::where('email', $email)->first();
+            if ($exists) {
+                if (!Auth::check()) {
+                    Auth::attempt(["email" => $email, 'password' => ApiController::DEFAULT_PASSWORD]);
+                }
+            } else {
+                $newUser = new User();
+                $newUser->email = $email;
+                $newUser->username = $username;
+                $newUser->lastname = $name;
+                $newUser->password = Hash::make(ApiController::DEFAULT_PASSWORD);
+                $newUser->save();
+
+                Auth::attempt(["email" => $email, 'password' => ApiController::DEFAULT_PASSWORD]);
+            }
+            DB::commit();
+            return "DONE";
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return "ERROR";
+        }
     }
 }
